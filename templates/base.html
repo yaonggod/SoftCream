@@ -1,0 +1,309 @@
+{% load django_bootstrap5 %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+        <title>Soft Cream</title>
+        {% bootstrap_css %}
+
+        <link rel="shortcut icon" type="image/png" href="{% static 'images/shoes.png' %}"/>
+{% comment %} <style>
+	/* The side navigation menu */
+.sidenav {
+  height: 100%; /* 100% Full-height */
+  width: 0; /* 0 width - change this with JavaScript */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Stay on top */
+  top: 0; /* Stay at the top */
+  left: 0;
+  background-color: #111; /* Black*/
+  overflow-x: hidden; /* Disable horizontal scroll */
+  padding-top: 60px; /* Place content 60px from the top */
+  transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
+}
+
+/* The navigation menu links */
+.sidenav a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+}
+
+/* When you mouse over the navigation links, change their color */
+.sidenav a:hover {
+  color: #f1f1f1;
+}
+
+/* Position and style the close button (top right corner) */
+.sidenav .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+/* Style page content - use this if you want to push the page content to the right when you open the side navigation */
+#main {
+  transition: margin-left .5s;
+  padding: 20px;
+}
+
+/* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
+</style> {% endcomment %}
+
+<style>
+          /* The side navigation menu */
+.sidenav {
+  height: 100%; /* 100% Full-height */
+  width: 0; /* 0 width - change this with JavaScript */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Stay on top */
+  top: 0; /* Stay at the top */
+  right: 0;
+  background-color: 255,255,255; /* Black*/
+  overflow-x: hidden; /* Disable horizontal scroll */
+  padding-top: 60px; /* Place content 60px from the top */
+  transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
+}
+
+/* The navigation menu links */
+.sidenav a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+}
+
+/* When you mouse over the navigation links, change their color */
+.sidenav a:hover {
+  color: #f1f1f1;
+}
+
+/* Position and style the close button (top right corner) */
+.sidenav .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+/* Style page content - use this if you want to push the page content to the right when you open the side navigation */
+#main {
+  transition: margin-left .5s;
+  padding: 20px;
+}
+
+/* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
+</style>
+
+        {% block css %}{% endblock css %}
+        <link rel="stylesheet" href="{% static 'css/style.css' %}?{% now 'U' %}">
+
+    </head>
+
+    <body>
+      <div id="mySidenav" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">
+					<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+            <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z">
+          </svg>
+				</a>
+				{% if article %}
+				<a href="{% url 'articles:detail' article.pk %}">
+					<div class='me-2'>
+						{% if article.user.profile.image %}
+						<img src="{{ article.user.profile.image.url }}" alt="{{ article.user.profile.image }}" style='width:2rem;height:2rem' class='rounded-circle'>
+						{% else %}
+						<img src="{% static 'profile/guest.png' %}" alt="guest" style='width:2rem;height:2rem' class='rounded-circle'>
+						{% endif %}
+						<span class='fs-6 fw-bold' style='font-size:10px'>{{ article.user }}</span>
+						<span class='fs-6'>{{ article.title }}</span>
+					</div>
+					<p class='fs-6'>{{ article.created_at }}</p>
+				</a>
+
+				{% if request.user.is_authenticated %}
+        <form id='comment-form' data-article-id="{{ article.pk }}" class='row'>
+            <div class="col-2 mt-4 ps-4" onclick='location.href="{% url 'accounts:mypage' request.user.pk %}";' style='cursor:pointer; margin-top: 1.7rem !important'>
+              {% if request.user.profile.image %}
+              <img src="{{ request.user.profile.image.url }}" alt="{{ request.user.profile.image }}" style='width:2rem;height:2rem' class='rounded-circle'>
+              {% else %}
+              <img src="{% static 'profile/guest.png' %}" alt="guest" style='width:2rem;height:2rem' class='rounded-circle'>
+              {% endif %}
+            </div>
+            {% csrf_token %}
+            <div class='col-10 ps-0'>
+              {% bootstrap_form form %}
+            </div>
+            <div class='col-12 text-end'>
+              <input type="submit" value="작성" class='btn btn-light '>
+            </div>
+				</form>
+        {% endif %}
+				<p id='comment_count' class='ms-3' >댓글 <span class='fw-bold'>{{ article.comment_set.count }}</span>개</p>
+				{% if article.comment_set.all %}
+				<div id='comments'>
+
+					{% for comment in article.comment_set.all %}
+					<div>
+					<a href="{% url 'accounts:mypage' comment.user.pk %}" class='p-0 ps-3'>
+						{% if comment.user.profile.image %}
+						<img src="{{ comment.user.profile.image.url }}" alt="{{ comment.user.profile.image }}" style='width:2rem;height:2rem' class='rounded-circle'>
+						{% else %}
+						<img src="{% static 'profile/guest.png' %}" alt="guest" style='width:2rem;height:2rem' class='rounded-circle'>
+						{% endif %}
+						<span class='fs-6'>{{ comment.user.username }}</span>
+						<span class='fs-6'>{{ comment.content }}</span>
+						<p class='fs-6'>{{ comment.create_at }}</p>
+					</a>
+				</div>
+				{% endfor %}
+			</div>
+				{% endif %}
+				{% endif %}
+
+      </div>
+
+      <!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page -->
+      <div id="main" class='p-0'>
+        <nav class="navbar navbar-expand-lg bg-white">
+            <div class="container-fluid">
+              <a class="navbar-brand fw-bold fs-3 ms-2 pt-0" href="{% url 'articles:index' %}">Soft Cream</a>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+                <ul class="d-flex navbar-nav mb-2 mb-lg-0 justify-content-end">
+                  <li class="nav-item">
+                    {% if request.user.is_authenticated %}
+
+                    <a class="nav-link" aria-current="page" href="{% url 'accounts:profile' request.user.pk %}">
+                      {% if request.user.profile.image %}
+                      <img src="{{ request.user.profile.image.url }}" style='width:2rem;height:2.2rem' alt="" class='rounded-circle'>
+                      {{ request.user }}
+                      {% else %}
+                      <img src="{% static 'profile/guest.png' %}" style='width:2rem;height:2.2rem' alt="" class='rounded-circle'>
+                      {{ request.user }}
+                      {% endif %}
+                    </a>
+                    {% endif %}
+                    {% if request.user.is_authenticated %}
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link mt-1" href="{% url 'articles:create' %}">CREATE</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link mt-1" href="{% url 'accounts:mypage' request.user.pk %}">Mypage</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link mt-1" aria-current="page" href="{% url 'accounts:logout' %}">Logout</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link mt-1" href="{% url 'accounts:index' %}">Userlist</a>
+                  </li>
+                  {% else %}
+                  <li class="nav-item">
+                    <a class="nav-link " aria-current="page" href="{% url 'accounts:login' %}">Login</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link " aria-current="page" href="{% url 'accounts:signup' %}">Signup</a>
+                  </li>
+                  {% endif %}
+                </ul>
+                <form class="d-flex" role="search" method='GET' action="{% url 'articles:search' %}">
+                  <select class="select border rounded me-2" aria-label="Default select example" name='field'>
+                    <option value="1">전체</option>
+                    <option value="2">제목</option>
+                    <option value="3">내용</option>
+                    <option value="4">작성자</option>
+                  </select>
+                  <input class="form-control me-2" type="search" placeholder="게시글 검색" name='searched'>
+              
+                  <button class="btn btn-dark me-2" type="submit" style="width: 7rem;">검색</button>
+                </form>
+              </div>
+            </div>
+          </nav>
+          <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+          <script>
+            const commentForm = document.querySelector('#comment-form')
+            const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+            commentForm.addEventListener('submit', function(event) {
+              event.preventDefault();
+              axios({
+                method: 'post',
+                url: `/articles/comment/${event.target.dataset.articleId}`,
+                headers: {'X-CSRFToken': csrftoken},
+                data: new FormData(commentForm)
+              })
+              .then(response => {
+                const comment = document.querySelector('#comments')
+                const comment_c = document.querySelector('#comment_count')
+                comment_c.innerText = `댓글 ${response.data.comment_count}개`
+
+
+
+                const p = document.createElement('p')
+                p.innerText = `${response.data.userName} | ${response.data.content}`
+                const hr = document.createElement('hr')
+                comment.append(p,hr)
+                
+                commentForm.reset()
+                
+              })
+            })
+          </script>
+        {% block content %}
+        {% endblock %}
+        <footer class="container-fluid text-center position-fixed-bottom style='background-color:white">
+            <h5 class = "mt-3">
+                <a class="text-decoration-none" href="https://github.com/dortkthf">s</a>
+                <a class="text-decoration-none" href="https://github.com/ericaforcoding">o</a>
+                <a class="text-decoration-none" href="https://github.com/yaonggod">f</a>
+                <a class="text-decoration-none" href="https://github.com/BuildEnough">t</a>
+                <a class="text-decoration-none" href="#">c</a>
+                <a class="text-decoration-none" href="#">r</a>
+                <a class="text-decoration-none" href="#">e</a>
+                <a class="text-decoration-none" href="#">a</a>
+                <a class="text-decoration-none" href="#">m</a>
+            </h5>
+        </footer>
+      </div>
+        {% bootstrap_javascript %}
+        {% block script1 %}
+        {% endblock script1 %}
+        <script>
+          /* Set the width of the side navigation to 250px */
+          function openNav() {
+            document.getElementById("mySidenav").style.width = "350px";
+            document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
+            document.querySelector('#mySidenav').style.backgroundColor = 'white';
+          }
+          /* Set the width of the side navigation to 0 */
+          function closeNav() {
+            document.getElementById("mySidenav").style.width = "0";
+            document.body.style.backgroundColor = "white";
+          }
+        </script>
+
+    </body>
+</html>

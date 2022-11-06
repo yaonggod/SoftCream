@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load django_bootstrap5 %}
+{% block content %}
+
+<div class="container col-12 col-sm-10 col-md-9 col-lg-8">
+  <div class="text-center my-5 "><h1 class='fw-bold'>새로운 글</h1></div>
+  <form action="" method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="text-end">
+        <input type="submit" value="작성하기" class="btn btn-primary">
+      </div>
+      {% bootstrap_form article_form %}
+
+      <div class="d-flex justify-content-between">
+        <input type="file" name="image" style="cursor:pointer;" multiple >
+        <a href="{% url 'articles:index' %}" class="btn btn-dark" >홈으로</a>
+      </div>
+  </form>
+</div>
+{% endblock %}

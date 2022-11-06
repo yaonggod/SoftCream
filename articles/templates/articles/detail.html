@@ -1,0 +1,241 @@
+{% extends 'base.html' %}
+{% load django_bootstrap5 %}
+{% load static %}
+{% block content %}
+
+<div class="modal fade2" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-footer flex-column">
+            <div class='d-grid' style='width:470px;'>
+                <a href="{% url 'articles:update' article.pk %}" class="btn text-primary" >글 수정</a>
+                <hr>
+                <a href="{% url 'articles:delete' article.pk %}" class='btn text-danger'>글 삭제</a>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<main class="container w-50">
+    <div class="d-flex justify-content-between my-1 mt-5">
+        <div class="d-flex my-3" onclick='location.href="{% url 'accounts:mypage' article.user.pk %}"' style='cursor: pointer;'>
+            <div class='me-2'>
+                {% if article.user.profile.image %}
+                <img src="{{ article.user.profile.image.url }}" alt="{{ article.user.profile.image }}" style='width:3rem;height:3rem' class='rounded-circle'>
+                {% else %}
+                <img src="{% static 'profile/guest.png' %}" alt="guest" style='width:3rem;height:3rem' class='rounded-circle'>
+                {% endif %}
+            </div>
+            <div class='d-flex flex-column'>
+                <p class='p-0 mb-0 text-start fw-bold'>{{ article.user }}</p>
+                <p class='p-0 mb-0 fw-light'>{{ article.created_at }}</p>
+            </div>
+        </div>
+        <div class="d-flex align-content-center">
+            {% if request.user.is_authenticated %}
+                {% if request.user != article.user %}
+                    {% if request.user in article.user.followers.all %}
+                    <span id='follow' data-user-id='{{ article.user.pk }}' class='btn btn-light my-4 px-4'>팔로잉</span>
+                    {% else %}
+                    <span id='follow' data-user-id='{{ article.user.pk }}' class='btn btn-dark my-4 px-4'>팔로우</span>
+                    {% endif %}
+                {% else %}
+                    <button type="button" class="btn my-4" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+                            <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+                          </svg>
+                    </button>
+                {% endif %}
+            {% else %}
+                <a href="{% url 'accounts:login' %}" class='btn btn-dark my-4 px-4'>팔로우</a>
+            {% endif %}
+        </div>
+    </div>
+
+
+<!-- Slideshow container -->
+<div class="slideshow-container">
+
+    <!-- Full-width images with number and caption text -->
+    {% for i in article.articles_image.all %}
+    <div class="mySlides">
+      <div class="numbertext">{{ forloop.counter }} / {{ article.articles_image.count }}</div>
+      <img src="{{ i.image.url }}" style="width:100%">
+    </div>
+    {% endfor %}
+  
+    <!-- Next and previous buttons -->
+    <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+    <a class="next" onclick="plusSlides(1)">&#10095;</a>
+  </div>
+  <br>
+  
+  <!-- The dots/circles -->
+  <div style="text-align:center">
+{% for i in article.articles_image.all %}
+    <span class="dot" onclick="currentSlide({{ forloop.counter }})"></span>
+{% endfor %}
+  </div>
+
+    <div class="d-flex justify-content-between">
+        <div class='d-flex justify-content-center my-3 text-danger'>
+            {% if request.user.is_authenticated %}
+            {% if request.user in article.like_users.all %}
+            <i id='like-btn' data-article-id="{{ article.pk }}" class="bi bi-heart-fill"></i>
+            {% else %}
+            <i id='like-btn' data-article-id="{{ article.pk }}" class="bi bi-heart"></i>
+            {% endif %}
+            {% endif %}
+            <span id="like-count" class='px-2'>
+                {{ article.like_users.count }}
+            </span>
+        </div>
+        <div class='my-3'>
+            <span onclick="openNav()">
+                <i class="bi bi-chat mb-3" style='cursor: pointer;'></i>
+            </span>
+        </div>
+    </div>
+
+    <p style="font-size: 2rem;" class="my-2"> 제목 {{ article.title }} </p>
+    <p class="my-2"> 내용 {{ article.content }} </p>
+    <div>
+    {% if article.comment_set %}
+    <p id='comment_c'>댓글 <span class='fw-bold'>{{ article.comment_set.count }}</span>개</p>
+    <div>
+        {% for comment in article.comment_set.all %}
+        <div class='d-flex justify-content-between' id='reply{{ comment.pk }}'>
+            <div class="d-flex mb-3">
+                <div class='me-2' onclick='location.href="{% url 'accounts:mypage' comment.user.pk %}"' style='cursor: pointer;'>
+                    {% if comment.user.profile.image %}
+                    <img src="{{ comment.user.profile.image.url }}" alt="{{ comment.user.profile.image }}" style='width:2rem;height:2rem' class='rounded-circle'>
+                    {% else %}
+                    <img src="{% static 'profile/guest.png' %}" alt="guest" style='width:2rem;height:2rem' class='rounded-circle'>
+                    {% endif %}
+                </div>
+                <div class='d-flex flex-column'>
+                    <p class='p-0 mb-0 text-start fw-bold small' style='font-size:10px'>{{ comment.user }}</p>
+                    <p class='p-0 mb-0 small' style='font-size:10px'>{{ comment.create_at }}</p>
+                </div>
+                <div class='ms-3 mt-1'>
+                    <p class='fw-light'>{{ comment.content }}</p>
+                </div>
+            </div>
+            {% if request.user == comment.user %}
+            <div>
+                <span onclick='replyDelete({{ comment.pk }});' class='btn btn-secondary px-1 py-1'>삭제</span>
+            </div>
+            {% endif %}
+        </div>
+        {% empty %}
+        <p>댓글이 없습니다.</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+    </div>
+</main>
+<script>
+    let slideIndex = 1;
+showSlides(slideIndex);
+
+// Next/previous controls
+function plusSlides(n) {
+  showSlides(slideIndex += n);
+}
+
+// Thumbnail image controls
+function currentSlide(n) {
+  showSlides(slideIndex = n);
+}
+
+function showSlides(n) {
+  let i;
+  let slides = document.getElementsByClassName("mySlides");
+  let dots = document.getElementsByClassName("dot");
+  if (n > slides.length) {slideIndex = 1}
+  if (n < 1) {slideIndex = slides.length}
+  for (i = 0; i < slides.length; i++) {
+    slides[i].style.display = "none";
+  }
+  for (i = 0; i < dots.length; i++) {
+    dots[i].className = dots[i].className.replace(" active", "");
+  }
+  slides[slideIndex-1].style.display = "block";
+  dots[slideIndex-1].className += " active";
+}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>   
+<script>
+    const likeBtn = document.querySelector('#like-btn')
+    likeBtn.addEventListener('click', function (event) {
+        console.log(event.target.dataset)
+        axios({
+            method: 'get',
+            url: `/articles/${event.target.dataset.articleId}/like/`,
+        })
+        .then(response => {
+            console.log(response)
+            console.log(response.data)
+            if (response.data.isLiked === true) {
+                event.target.classList.add('bi-heart-fill')
+                event.target.classList.remove('bi-heart')
+            } else {
+                event.target.classList.add('bi-heart')
+                event.target.classList.remove('bi-heart-fill')
+            }
+            const likeCount = document.querySelector('#like-count')
+            likeCount.innerText = response.data.likeCount
+        })
+    })
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    const followBtn = document.querySelector('#follow')
+    followBtn.addEventListener('click', function(event) {
+        axios({
+            method: 'get',
+            url: `/accounts/follow/${event.target.dataset.userId}/`
+        })
+        .then(response => {
+            if( response.data.is_followed == true) {
+                event.target.classList.remove('btn-dark')
+                event.target.classList.add('btn-light')
+                followBtn.innerText= '팔로잉'
+            } else {
+                event.target.classList.remove('btn-light')
+                event.target.classList.add('btn-dark')
+                followBtn.innerText='팔로우'
+            }
+        })
+    })
+</script>
+{% comment %} 댓글 {% endcomment %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+
+    const replyDelete = (id) => {
+        let param = {
+            'replyId' : id
+        }
+        $.ajax({
+            url : '{% url 'articles:comment_d' %}',
+            type : 'POST',
+            headers : {
+                'X-CSRFTOKEN' : '{{ csrf_token }}'
+            },
+            data : JSON.stringify(param),
+            success:function(data){
+                if (data.result == 'ok') {
+                    let replyTr = document.querySelector(`#reply${id}`)
+                    replyTr.remove()
+                    alert('삭제 하였습니다')
+                }
+            },
+            error: function(){
+                alert('X')
+            }
+        })
+    }
+</script>
+{% endblock %}

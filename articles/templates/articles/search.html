@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load django_bootstrap5 %}
+
+{% block content%}
+
+
+<div class='container'>
+  <table class="table">
+    <thead>
+      <tr>
+        <th class="col"></th>
+        <th class="col"></th>
+        <th class="col">글 제목</th>
+        <th class="col">작성자</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for article in articles %}
+      <tr style="vertical-align: middle;">
+        <th class="col-1 align-center">{{ article.category }}</th>
+        {% if article.articles_image.all|length %}
+          {% for image in article.articles_image.all %}
+            {% if forloop.counter == 1 %}
+            <th class="col-2"><img style='width:100px; height: 100px' class="rounded-4" src="{{ image.image.url }}" alt="{{ image.image }}"></th>
+            {% endif %}
+          {% endfor %}
+        {% else %}
+          <th class="col-2"><img class="rounded-4" src="{% static 'images/6c757d.jpg' %}" alt=""></th>
+        {% endif %}
+        <th class="col-7">
+          <a href="{% url 'articles:detail' article.pk %}" class="text-decoration-none text-dark">
+            {{ article.title }}
+          </a>
+        </th>
+        <th class="col-2">{{ article.user }}</th>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<div class="text-center my-5" style="font-size: 400%;">{{ text }}</div>
+
+{% endblock %}

@@ -1,0 +1,16 @@
+<div class="d-flex mb-3">
+    <div class='me-2' onclick='location.href="{% url 'accounts:mypage' comment.user.pk %}"' style='cursor: pointer;'>
+        {% if comment.user.profile.image %}
+        <img src="{{ comment.user.profile.image.url }}" alt="{{ comment.user.profile.image }}" style='width:2rem;height:2rem' class='rounded-circle'>
+        {% else %}
+        <img src="{% static 'profile/guest.png' %}" alt="guest" style='width:2rem;height:2rem' class='rounded-circle'>
+        {% endif %}
+    </div>
+    <div class='d-flex flex-column'>
+        <p class='p-0 mb-0 text-start fw-bold small' style='font-size:10px'>{{ comment.user }}</p>
+        <p class='p-0 mb-0 small' style='font-size:10px'>{{ comment.create_at }}</p>
+    </div>
+    <div class='ms-3'>
+        <p class='fw-light'>{{ comment.content }}</p>
+    </div>
+</div>

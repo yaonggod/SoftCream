@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load django_bootstrap5 %}
+{% load static %}
+{% block content %}
+<div class="container">
+    <h1 class="fw-bold my-5 border border-dark border-top-0 border-start-0 border-end-0 border-5 pb-3">프로필 정보</h1>
+    <div class="row">
+        <div class="col-12 col-md-6 d-flex flex-column align-content-center mb-5" >
+            <div class='row '>
+                
+                {% if user.profile.image %}
+                <div class='col-5 '>
+                    <img src="{{ user.profile.image.url }}" alt="{{ user.profile.image }}">
+                    {% if request.user == user %}
+                    <div class='text-center d-grid'>
+                        <a href="{% url 'accounts:pupdate' %}" class='btn btn-primary my-2'>프로필 업데이트</a>
+                    </div>
+                    {% endif %}
+                </div>
+
+                {% elif user.profile.thumbnail %}
+                    
+                <div class='col-5 '>
+                    <img src="{{ user.profile.thumbnail.url }}" alt="{{ user.profile.thumbnail }}" >
+                    {% if request.user == user %}
+                    <div class='text-center d-grid'>
+                        <a href="{% url 'accounts:pupdate' %}" class='btn btn-primary my-2'>프로필 업데이트</a>
+                    </div>
+                    {% endif %}
+                </div>
+
+                {% else %}
+                <div class='row '>
+                    <img src="{% static 'profile/guest.png' %}" alt="" class='text-cneter' style='width:20rem'>
+                    {% if request.user == user %}
+                    <div class='text-center d-grid' style='width:20rem'>
+                        <a href="{% url 'accounts:pupdate' %}" class='btn btn-primary my-2'>프로필 업데이트</a>
+                    </div>
+                    {% endif %}
+                </div>
+
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-12 col-md-6">
+            <p class='fw-bold'>아이디 : <span class='fw-light'> {{ user }} </span></p>
+            <p class='fw-bold'>이메일 : <span class='fw-light'> {{ user.email }} </span></p>
+            <p class='fw-bold'>이름 : <span class='fw-light'> {{ user.first_name }} {{ user.last_name }} </span> </p>
+            <p class='fw-bold'>상태메세지 : <span class='fw-light'> {{ user.profile.status }} </span></p>
+        </div>
+    </div>
+</div>
+{% endblock  %}

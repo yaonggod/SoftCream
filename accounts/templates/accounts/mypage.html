@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% load django_bootstrap5 %}
+{% load static %}
+{% block content %}
+<div class="container">
+
+    <div class="d-flex justify-content-center flex-column">
+        <h1 class='text-center fw-bold my-5'>마이 페이지</h1>
+        <div class='d-flex'>
+            <div class='me-3' onclick='location.href="{% url 'accounts:profile' user.pk %}"' style='cursor: pointer;'>
+                {% if user.profile.image %}
+                <img src="{{ user.profile.image.url }}" alt="" style='width:5rem; height:5rem' class='rounded-circle'>
+                {% elif user.profile.thumbnail.image %}
+                <img src="{{ user.profile.thumbnail.url }}" alt="" style='width:5rem; height:5rem' class='rounded-circle'>
+                {% else %}
+                <img src="{% static 'profile/guest.png' %}" alt="" style='width:5rem; height:5rem' class='rounded-circle'>
+                {% endif %}
+            </div>
+            <div>
+                <div>
+                    <a class='btn btn-light mb-2' href='{% url 'accounts:profile' user.pk %}'>{{ user }}</a>
+                    {% if request.user.is_authenticated %}
+                    {% if request.user != user %}
+                        {% if request.user in user.followers.all %}
+                        <span id='follow' data-user-id='{{ user.pk }}' class='btn btn-light mb-2'>팔로잉</span>
+                        {% else %}
+                        <span id='follow' data-user-id='{{ user.pk }}' class='btn btn-dark mb-2'>팔로우</span>
+                        {% endif %}
+                    {% endif %}
+                    {% endif %}
+                </div>
+                    {% if request.user == user %}
+                <div>
+                    <a href="{% url 'accounts:update' %}" class="btn btn-warning">정보수정</a>
+                    <a href="#" class="btn btn-primary">내 스타일</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class='d-flex my-4'>
+            <p class="small fw-bold me-4">전체 게시글 </p> 
+            <p class="small fw-bold me-4 text-primary">팔로워 <span id='followers' class='text-dark'>{{ user.followers.count }}</span></p>
+            <p class="small fw-bold text-primary">팔로잉 <span id='followings' class='text-dark'>{{ user.followings.count }}</span></p>
+        </div>
+        {% if user.category_followings.all %}
+        <h3 class='text-center fw-bold'>팔로우한 브랜드</h3>
+        
+        {% for c in user.category_followings.all %}
+        <p>{{ c.name }}</p>
+        {% endfor %}
+        <div class="row g-3 my-3">
+            {% for article in user.like_articles.all %}
+            <div class="col-6  col-md-3" onclick='location.href="{% url 'articles:detail' article.pk %}"' style='cursor: pointer;'>
+                <div class="card">
+                    {% if article.image %}
+                    <img src="{{ article.image.url }}" class="card-img-top" alt="{{ article.image }}">
+                    {% else %}
+                    <img src={% static 'images/noimage.jpg' %} class="card-img-top" alt="noimage">
+                    {% endif %}
+                    <div class="card-body">
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% endif %}
+
+        <h3 class='fw-bold my-4'>작성한 글</h3>
+        <div>
+            <div class="row mx-5 gap-3 justify-content-center">
+        
+                {% for article in articles %}
+        
+                <div class="card col-12 col-md-5 col-lg-3 p-0">
+                    
+                    {% if article.articles_image.all|length %}
+                        {% for image in article.articles_image.all %}
+                            {% if forloop.counter == 1 %}
+                                <a href="{% url 'articles:detail' article.pk %}"><img src="{{ image.image.url }}" alt="{{ article.image }}" class="rounded-4" style='width:100%;'></a>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <a href="{% url 'articles:detail' article.pk %}"><img src="{% static 'images/6c757d.jpg' %}" alt="" class="rounded-4" style='width:100%;'></a>
+                    {% endif %}
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+        
+                            <div class='me-3' onclick='location.href="{% url 'accounts:mypage' article.user.pk %}"' style='cursor: pointer;'>
+                                {% if article.user.profile.image %}
+                                <img src="{{ article.user.profile.image.url }}" alt="" style='width:5rem; height:5rem' class='rounded-circle'>
+                                {% else %}
+                                <img src="{% static 'profile/guest.jpg' %}" style='width:5rem; height:5rem' class='rounded-circle'>
+                                {% endif %}     
+                                <h5 class="card-title">{{ article.user.username }}</h5>
+                                <P>{{ article.content }}</P>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                {% endfor %}
+            </div>
+        </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    const followBtn = document.querySelector('#follow')
+    followBtn.addEventListener('click', function(event) {
+        axios({
+            method: 'get',
+            url: `/accounts/follow/${event.target.dataset.userId}/`
+        })
+        .then(response => {
+            if( response.data.is_followed == true) {
+                event.target.classList.remove('btn-dark')
+                event.target.classList.add('btn-light')
+                followBtn.innerText= '팔로잉'
+            } else {
+                event.target.classList.remove('btn-light')
+                event.target.classList.add('btn-dark')
+                followBtn.innerText='팔로우'
+            }
+            const followers = document.querySelector('#followers')
+            const followings = document.querySelector('#followings')
+            followers.innerText = response.data.followersC
+            followings.innerText = response.data.followingsC
+        })
+    })
+</script>
+    {% endblock  %}
+

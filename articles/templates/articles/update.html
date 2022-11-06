@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load django_bootstrap5 %}
+{% block content %}
+<div class="text-center my-5"><h1>Modify Shoes</h1></div>
+
+<div class="container">
+    <form action="" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% bootstrap_form article_form %}
+        <div class="d-flex justify-content-between">
+            <div><input type="submit" value="update"></div>
+            <div><a href="{% url 'articles:index' %}" class="text-decoration-none" style="color:rgb(207, 178, 132)">Previous</a></div>
+        </div>
+    </form>
+</div>
+{% endblock %}

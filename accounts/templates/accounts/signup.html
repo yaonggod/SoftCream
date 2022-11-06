@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load django_bootstrap5 %}
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-center">
+        <div style='width:30rem;margin: 3rem 0 0 0'>
+            <h1 class="text-center fw-bold">Soft Cream</h1>
+            <form action="{% url 'accounts:signup' %}" method='POST'>
+                {% csrf_token %}
+                {% for field in form %}
+                <div>
+                    {% bootstrap_field field %}
+                    <div class='d-none'>
+                        {{ field.label }}
+                    </div>
+                </div>
+                {% endfor %}
+                <div class="d-grid">
+                    <input type="submit" value="회원가입" class="btn btn-primary">
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+{% endblock  %}
