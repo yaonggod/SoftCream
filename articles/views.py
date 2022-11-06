@@ -65,19 +65,19 @@ def detail(request, pk):
 
 @require_http_methods(["GET", "POST"])
 def update(request, pk):
-    article = get_object_or_404(Articles, pk=pk)
-    if request.method == "POST":
-        article_form = ArticleForm(request.POST, request.FILES, instance=article)
+    article = Articles.objects.get(pk=pk)
+    # image = Image.objects.get(pk=pk)
+    if request.method == 'POST':
+        article_forms = ArticleForm(request.POST, request.FILES, instance=article)
         image_form = ImageForm(request.POST, request.FILES, instance=article)
         images = request.FILES.getlist("image")
-        if article_form.is_valid() and image_form.is_valid():
-            article_forms = article_form.save(commit=False)
-            image_forms = image_form.save(commit=False)
-            article_forms.user = request.user
+        if article_forms.is_valid() and image_form.is_valid():
+            article = article_forms.save(commit=False)
+            # image_form = article_forms.save(commit=False)
             if len(images):
                 for image in images:
-                    image_instance = Image(articles=article_form, image=image)
-                    article_form.save()
+                    image_instance = Image(articles=article, image=image)
+                    article.save()
                     image_instance.save()
             else:
                 article_form.save()
