@@ -1,5 +1,6 @@
 {% load django_bootstrap5 %}
 {% load static %}
+{% load humanize %}
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -138,7 +139,7 @@
 						<span class='fs-6 fw-bold' style='font-size:10px'>{{ article.user }}</span>
 						<span class='fs-6'>{{ article.title }}</span>
 					</div>
-					<p class='fs-6'>{{ article.created_at }}</p>
+					<p class='fs-6'>{{ article.created_at|naturaltime }}</p>
 				</a>
 
 				{% if request.user.is_authenticated %}
@@ -172,7 +173,7 @@
 						{% endif %}
 						<span class='fs-6'>{{ comment.user.username }}</span>
 						<span class='fs-6'>{{ comment.content }}</span>
-						<p class='fs-6'>{{ comment.create_at }}</p>
+						<p class='fs-6'>{{ comment.create_at|naturaltime }}</p>
 					</a>
 				</div>
 				{% endfor %}
