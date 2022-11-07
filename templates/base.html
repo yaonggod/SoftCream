@@ -306,6 +306,28 @@
         {% endblock script1 %}
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
         <script>
+          function timeForToday(value) {
+            const today = new Date();
+            const timeValue = new Date(value);
+    
+            const betweenTime = Math.floor((today.getTime() - timeValue.getTime()) / 1000 / 60);
+            if (betweenTime < 1) return '방금전';
+            if (betweenTime < 60) {
+                return `${betweenTime}분전`;
+            }
+    
+            const betweenTimeHour = Math.floor(betweenTime / 60);
+            if (betweenTimeHour < 24) {
+                return `${betweenTimeHour}시간전`;
+            }
+    
+            const betweenTimeDay = Math.floor(betweenTime / 60 / 24);
+            if (betweenTimeDay < 365) {
+                return `${betweenTimeDay}일전`;
+            }
+    
+            return `${Math.floor(betweenTimeDay / 365)}년전`;
+     }
           const commentForm = document.querySelector('#comment-form')
           const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
           commentForm.addEventListener('submit', function(event) {
@@ -330,7 +352,7 @@
               content.textContent = `${response.data.content}`
 
               create = clone.querySelector('#inner_created')
-              create.textContent = `${response.data.created}`
+              create.textContent = timeForToday(response.data.created)
               
               comment.appendChild(clone)
 
@@ -347,7 +369,7 @@
               content2.textContent = `${response.data.content}`
 
               create2 = clone2.querySelector('#main_created')
-              create2.textContent = `${response.data.created}`
+              create2.textContent = timeForToday(response.data.created)
 
               comment2.appendChild(clone2)
               
