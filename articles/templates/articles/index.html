@@ -281,23 +281,20 @@ display: none;
 
         {% if lookbook_articles %}
         {% for article in lookbook_articles %}
-        <div class="card swiper-slide border border-0">
-
-            <div style='width:200px;position:relative'>
-
-                <a href="{% url 'articles:detail' article.pk %}">
-                    
-                    {% if article.articles_image.count %}
-                    {% for img in article.articles_image.all %}
-                    {% if forloop.counter == 1 %}
-                    <img src="{{img.image.url}}" alt="{{ img.image }}" style="width:200px; height:246px;"  class='rounded-4'>
-                    {% endif %}
-                        {% endfor %}
-                        {% else %}
-                        <img src="{% static 'images/6c757d.jpg' %}" alt="빈이미지" style="width:200px; height:246px;" class='rounded-4' >
-                        {% endif %}
-                    </a>
+            <div class="card swiper-slide border border-0">
+                    <a href="{% url 'articles:detail' article.pk %}">
                         
+                        {% if article.articles_image.count %}
+                        {% for img in article.articles_image.all %}
+                        {% if forloop.counter == 1 %}
+                        <img src="{{img.image.url}}" alt="{{ img.image }}" style="width:200px; height:246px;"  class='rounded-4'>
+                        {% endif %}
+                            {% endfor %}
+                            {% else %}
+                            <img src="{% static 'images/6c757d.jpg' %}" alt="빈이미지" style="width:200px; height:246px;" class='rounded-4' >
+                            {% endif %}
+                    </a>
+                            
                     <a href="{% url 'accounts:mypage' article.user.pk %}">
                         {% if article.user.profile.image %}
                         <img src="{{ article.user.profile.image.url }}" alt="" style='width:3rem;height:3rem;position:absolute;top:3px;left:3px' class='rounded-circle'>
@@ -306,7 +303,7 @@ display: none;
                         {% endif %}
                     </a>
             </div>
-            {% endfor %}
+        {% endfor %}
         {% endif %}
         </div>
     </div>

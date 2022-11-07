@@ -122,8 +122,9 @@
     </div>
 </div>
 
-    <p style="font-size: 2rem;" class="my-2">{{ article.title }} </p>
-    <p class="my-2"> {{ article.content }} </p>
+    <p style="font-size: 2rem;" class="my-2">[{{ article.category }}]{{ article.title }} </p>
+    <p class="my-2">{{ article.content }} </p>
+
     <div>
     {% if article.comment_set %}
     {% comment %} <p id='comment_c'>댓글 <span class='fw-bold'>{{ article.comment_set.count }}</span>개</p> {% endcomment %}
