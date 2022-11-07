@@ -125,8 +125,8 @@
     <p class="my-2"> 내용 {{ article.content }} </p>
     <div>
     {% if article.comment_set %}
-    <p id='comment_c'>댓글 <span class='fw-bold'>{{ article.comment_set.count }}</span>개</p>
-    <div>
+    {% comment %} <p id='comment_c'>댓글 <span class='fw-bold'>{{ article.comment_set.count }}</span>개</p> {% endcomment %}
+    <div id='comment2'>
         {% for comment in article.comment_set.all %}
         <div class='d-flex justify-content-between' id='reply{{ comment.pk }}'>
             <div class="d-flex mb-3">
@@ -151,8 +151,8 @@
             </div>
             {% endif %}
         </div>
-        {% empty %}
-        <p>댓글이 없습니다.</p>
+        {% comment %} {% empty %}
+        <p>댓글이 없습니다.</p> {% endcomment %}
         {% endfor %}
     </div>
     {% endif %}
@@ -187,8 +187,10 @@ function showSlides(n) {
   slides[slideIndex-1].style.display = "block";
   dots[slideIndex-1].className += " active";
 }
+
+{% comment %} 좋아요  {% endcomment %}
 </script>
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>   
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
     const likeBtn = document.querySelector('#like-btn')
     likeBtn.addEventListener('click', function (event) {
@@ -213,6 +215,8 @@ function showSlides(n) {
     })
 
 </script>
+
+{% comment %} 팔로우 {% endcomment %}
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
     const followBtn = document.querySelector('#follow')
@@ -234,10 +238,12 @@ function showSlides(n) {
         })
     })
 </script>
-{% comment %} 댓글 {% endcomment %}
+
+
+{% comment %} 댓글삭제 {% endcomment %}
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-
     const replyDelete = (id) => {
         let param = {
             'replyId' : id
@@ -252,7 +258,9 @@ function showSlides(n) {
             success:function(data){
                 if (data.result == 'ok') {
                     let replyTr = document.querySelector(`#reply${id}`)
+                    let replyTr2 = document.querySelector(`#comments${id}`)
                     replyTr.remove()
+                    replyTr2.remove()
                     alert('삭제 하였습니다')
                 }
             },

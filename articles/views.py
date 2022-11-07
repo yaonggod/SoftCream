@@ -67,7 +67,7 @@ def detail(request, pk):
 def update(request, pk):
     article = Articles.objects.get(pk=pk)
     # image = Image.objects.get(pk=pk)
-    if request.method == 'POST':
+    if request.method == "POST":
         article_forms = ArticleForm(request.POST, request.FILES, instance=article)
         image_form = ImageForm(request.POST, request.FILES, instance=article)
         images = request.FILES.getlist("image")

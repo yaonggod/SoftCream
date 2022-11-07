@@ -21,7 +21,6 @@ font-family: 'Poppins', sans-serif;
 }
 body{
 min-height: 100vh;
-display: flex;
 align-items: center;
 justify-content: center;
 }
@@ -36,6 +35,7 @@ overflow: hidden;
 border-radius: 25px;
 }
 .card{
+
 border-radius: 25px;
 background-color: #FFF;
 }
@@ -267,8 +267,7 @@ display: none;
         
         {% if articles %}
         {% for article in articles %}
-        <div class="card swiper-slide">
-            <div style='width:200px;position:relative'>
+        <div class="card swiper-slide border border-0" style='width:200px;position:relative !important'>
                 <a href="{% url 'articles:detail' article.pk %}">
                     
                     {% if article.articles_image.count %}
@@ -289,7 +288,6 @@ display: none;
                         <img src="{% static 'profile/guest.jpg' %}" alt="" style='width:3rem;height:3rem;position:absolute;top:3px;left:3px' class='rounded-circle'>
                         {% endif %}
                     </a>
-                </div>
             </div>
             {% endfor %}
         {% endif %}
