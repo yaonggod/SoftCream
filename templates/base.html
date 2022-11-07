@@ -122,6 +122,8 @@
     </head>
 
     <body>
+      {% if request.user.is_authenticated %}
+      
       <div id="mySidenav" class="sidenav">
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">
 					<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
@@ -182,7 +184,7 @@
 				{% endif %}
       </div>
 
-
+      
       <template id='inner_comment'>
         <div>
 					<a href="{% url 'accounts:mypage' request.user.pk %}" class='p-0 ps-3'>
@@ -221,7 +223,7 @@
         </div>
       </template>
 
-
+      {% endif %}
       <!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page -->
       <div id="main" class='p-0'>
         <nav class="navbar navbar-expand-lg bg-white">

@@ -283,8 +283,6 @@ display: none;
         {% for article in lookbook_articles %}
         <div class="card swiper-slide border border-0">
 
-            <div style='width:200px;position:relative'>
-
                 <a href="{% url 'articles:detail' article.pk %}">
                     
                     {% if article.articles_image.count %}
