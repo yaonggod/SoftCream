@@ -9,11 +9,15 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css">
 <style>
 
-.card-body{
-    width:100px;
+.card-article{
+    width: 120px;
   text-overflow: ellipsis;
   overflow: hidden;
-  white-space: nowrap;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient:vertical;
+  cursor: pointer;
+  
 }
 
 {% comment %} 카드 슬라이더 {% endcomment %}
