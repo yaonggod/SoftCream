@@ -17,14 +17,18 @@ from django.db.models import Q
 # Create your views here.
 def index(request):
     articles = Articles.objects.order_by("-pk")
-    new_articles = Articles.objects.filter(created_at__gte=datetime.datetime.now() - datetime.timedelta(hours=24)).order_by('-pk')[:6]
-    lookbook_articles = Articles.objects.annotate(like_count=Count('like_users')).order_by('-like_count', '-pk')
+    new_articles = Articles.objects.filter(
+        created_at__gte=datetime.datetime.now() - datetime.timedelta(hours=24)
+    ).order_by("-pk")[:6]
+    lookbook_articles = Articles.objects.annotate(
+        like_count=Count("like_users")
+    ).order_by("-like_count", "-pk")
     image = Image.objects.order_by("-pk")
     form = CommentForm()
     context = {
         "articles": articles,
-        'new_articles': new_articles,
-        'lookbook_articles': lookbook_articles,
+        "new_articles": new_articles,
+        "lookbook_articles": lookbook_articles,
         "image": image,
         "form": form,
     }
@@ -105,7 +109,11 @@ def delete(request, pk):
 
 def category(request, category_pk):
     category = Category.objects.get(pk=category_pk)
-    category_articles = Articles.objects.filter(category=category).annotate(like_count=Count('like_users')).order_by('-like_count', '-pk')
+    category_articles = (
+        Articles.objects.filter(category=category)
+        .annotate(like_count=Count("like_users"))
+        .order_by("-like_count", "-pk")
+    )
     context = {"category": category, "category_articles": category_articles}
     return render(request, "articles/category.html", context)
 
