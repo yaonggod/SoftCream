@@ -231,7 +231,7 @@ display: none;
 <div>
     <div class="row mx-5 gap-3 justify-content-center">
 
-        {% for article in articles %}
+        {% for article in new_articles %}
 
         <div class="card col-12 col-md-5 col-lg-3 p-0">
             
@@ -273,9 +273,10 @@ display: none;
     <div class="slide-content">
         <div class="card-wrapper swiper-wrapper">
         
-        {% if articles %}
-        {% for article in articles %}
+        {% if lookbook_articles %}
+        {% for article in lookbook_articles %}
         <div class="card swiper-slide border border-0">
+
             <div style='width:200px;position:relative'>
                 <a href="{% url 'articles:detail' article.pk %}">
                     
@@ -313,44 +314,44 @@ display: none;
 <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
 <script>
      
-var swiper = new Swiper(".slide-content", {
-slidesPerView: 6,
-spaceBetween: 25,
-loop: true,
-centerSlide: 'true',
-fade: 'true',
-grabCursor: 'true',
-pagination: {
-el: ".swiper-pagination",
-clickable: true,
-dynamicBullets: true,
-},
-navigation: {
-nextEl: ".swiper-button-next",
-prevEl: ".swiper-button-prev",
-},
-
-breakpoints:{
-0: {
-    slidesPerView: 1,
-},
-230: {
-    slidesPerView: 2,
-},
-530: {
-    slidesPerView: 3,
-},
-830: {
-    slidesPerView: 4,
-},
-1130: {
-    slidesPerView: 5,
-},
-1400: {
+    var swiper = new Swiper(".slide-content", {
     slidesPerView: 6,
-},
-},
-});
+    spaceBetween: 25,
+    loop: true,
+    centerSlide: 'true',
+    fade: 'true',
+    grabCursor: 'true',
+    pagination: {
+    el: ".swiper-pagination",
+    clickable: true,
+    dynamicBullets: true,
+    },
+    navigation: {
+    nextEl: ".swiper-button-next",
+    prevEl: ".swiper-button-prev",
+    },
+
+    breakpoints:{
+    0: {
+        slidesPerView: 1,
+    },
+    230: {
+        slidesPerView: 2,
+    },
+    530: {
+        slidesPerView: 3,
+    },
+    830: {
+        slidesPerView: 4,
+    },
+    1130: {
+        slidesPerView: 5,
+    },
+    1400: {
+        slidesPerView: 6,
+    },
+    },
+    });
 
 </script>
 {% endblock %}
