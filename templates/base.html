@@ -160,12 +160,11 @@
             </div>
 				</form>
         {% endif %}
-				<p id='comment_count' class='ms-3' >댓글 <span class='fw-bold'>{{ article.comment_set.count }}</span>개</p>
-				{% if article.comment_set.all %}
+				{% comment %} <p id='comment_count' class='ms-3' >댓글 <span class='fw-bold'>{{ article.comment_set.count }}</span>개</p> {% endcomment %}
 				<div id='comments'>
-
+          {% if article.comment_set.all %}
 					{% for comment in article.comment_set.all %}
-					<div>
+					<div id='comments{{ comment.pk }}'>
 					<a href="{% url 'accounts:mypage' comment.user.pk %}" class='p-0 ps-3'>
 						{% if comment.user.profile.image %}
 						<img src="{{ comment.user.profile.image.url }}" alt="{{ comment.user.profile.image }}" style='width:2rem;height:2rem' class='rounded-circle'>
@@ -178,11 +177,50 @@
 					</a>
 				</div>
 				{% endfor %}
+				{% endif %}
 			</div>
 				{% endif %}
-				{% endif %}
-
       </div>
+
+
+      <template id='inner_comment'>
+        <div>
+					<a href="{% url 'accounts:mypage' request.user.pk %}" class='p-0 ps-3'>
+						{% if request.user.profile.image %}
+						<img src="{{ request.user.profile.image.url }}" alt="{{ request.user.profile.image }}" style='width:2rem;height:2rem' class='rounded-circle'>
+						{% else %}
+						<img src="{% static 'profile/guest.png' %}" alt="guest" style='width:2rem;height:2rem' class='rounded-circle'>
+						{% endif %}
+						<span class='fs-6'>{{ request.user.username }}</span>
+						<span class='fs-6' id='inner_content'></span>
+						<p class='fs-6' id='inner_created'></p>
+					</a>
+				</div>
+      </template>
+
+
+      <template id='main_comment'>
+          <div class='d-flex justify-content-between' id='reply{{ comment.pk }}'>
+              <div class="d-flex mb-3">
+                  <div class='me-2' onclick='location.href="{% url 'accounts:mypage' request.user.pk %}"' style='cursor: pointer;'>
+                      {% if request.user.profile.image %}
+                      <img src="{{ request.user.profile.image.url }}" alt="{{ request.user.profile.image }}" style='width:2rem;height:2rem' class='rounded-circle'>
+                      {% else %}
+                      <img src="{% static 'profile/guest.png' %}" alt="guest" style='width:2rem;height:2rem' class='rounded-circle'>
+                      {% endif %}
+                  </div>
+                  <div class='d-flex flex-column'>
+                      <p class='p-0 mb-0 text-start fw-bold small' style='font-size:10px'>{{ request.user.username }}</p>
+                      <p class='p-0 mb-0 small' style='font-size:10px' id='main_created'></p>
+                  </div>
+                  <div class='ms-3 mt-1'>
+                      <p class='fw-light' id='main_content'></p>
+                  </div>
+              </div>
+          </div>
+        </div>
+      </template>
+
 
       <!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page -->
       <div id="main" class='p-0'>
@@ -244,35 +282,7 @@
               </div>
             </div>
           </nav>
-          <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-          <script>
-            const commentForm = document.querySelector('#comment-form')
-            const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
-            commentForm.addEventListener('submit', function(event) {
-              event.preventDefault();
-              axios({
-                method: 'post',
-                url: `/articles/comment/${event.target.dataset.articleId}`,
-                headers: {'X-CSRFToken': csrftoken},
-                data: new FormData(commentForm)
-              })
-              .then(response => {
-                const comment = document.querySelector('#comments')
-                const comment_c = document.querySelector('#comment_count')
-                comment_c.innerText = `댓글 ${response.data.comment_count}개`
 
-
-
-                const p = document.createElement('p')
-                p.innerText = `${response.data.userName} | ${response.data.content}`
-                const hr = document.createElement('hr')
-                comment.append(p,hr)
-                
-                commentForm.reset()
-                
-              })
-            })
-          </script>
         {% block content %}
         {% endblock %}
         <footer class="container-fluid text-center position-fixed-bottom style='background-color:white">
@@ -292,6 +302,58 @@
         {% bootstrap_javascript %}
         {% block script1 %}
         {% endblock script1 %}
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script>
+          const commentForm = document.querySelector('#comment-form')
+          const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+          commentForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            axios({
+              method: 'post',
+              url: `/articles/comment/${event.target.dataset.articleId}`,
+              headers: {'X-CSRFToken': csrftoken},
+              data: new FormData(commentForm)
+            })
+            .then(response => {
+              const comment = document.querySelector('#comments')
+              
+              {% comment %} const comment_c = document.querySelector('#comment_count')
+              comment_c.innerText = `댓글 ${response.data.comment_count}개` {% endcomment %}
+
+
+              const tmp = document.querySelector('#inner_comment')
+              const clone = document.importNode(tmp.content, true)
+
+              content = clone.querySelector('#inner_content')
+              content.textContent = `${response.data.content}`
+
+              create = clone.querySelector('#inner_created')
+              create.textContent = `${response.data.created}`
+              
+              comment.appendChild(clone)
+
+              
+              {% comment %} const comment_c2 = document.querySelector('#comment_c')
+              comment_c2.innerText = `댓글 ${response.data.comment_count}개` {% endcomment %}
+              
+              const comment2 = document.querySelector('#comment2')
+
+              const tmp2 = document.querySelector('#main_comment')
+              const clone2 = document.importNode(tmp2.content, true)
+
+              content2 = clone2.querySelector('#main_content')
+              content2.textContent = `${response.data.content}`
+
+              create2 = clone2.querySelector('#main_created')
+              create2.textContent = `${response.data.created}`
+
+              comment2.appendChild(clone2)
+              
+              commentForm.reset()
+              
+            })
+          })
+        </script>
         <script>
           /* Set the width of the side navigation to 250px */
           function openNav() {

@@ -46,6 +46,7 @@ overflow: hidden;
 border-radius: 25px;
 }
 .card{
+
 border-radius: 25px;
 background-color: #FFF;
 }
@@ -277,11 +278,13 @@ display: none;
     <div class="slide-content">
         <div class="card-wrapper swiper-wrapper">
         
+
         {% if lookbook_articles %}
         {% for article in lookbook_articles %}
         <div class="card swiper-slide border border-0">
 
             <div style='width:200px;position:relative'>
+
                 <a href="{% url 'articles:detail' article.pk %}">
                     
                     {% if article.articles_image.count %}
@@ -302,7 +305,6 @@ display: none;
                         <img src="{% static 'profile/guest.jpg' %}" alt="" style='width:3rem;height:3rem;position:absolute;top:3px;left:3px' class='rounded-circle'>
                         {% endif %}
                     </a>
-                </div>
             </div>
             {% endfor %}
         {% endif %}
